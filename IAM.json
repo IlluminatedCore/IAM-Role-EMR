@@ -1,0 +1,100 @@
+{
+    "Description": "This will create the IAM role for EMR",
+    "Resources": {
+        "SmrtcEMR": {
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "elasticmapreduce.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "RoleName": "Smrtc-emr"
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "EMRAccess": {
+            "Properties": {
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "ec2:AuthorizeSecurityGroupIngress",
+                                "ec2:CancelSpotInstanceRequests",
+                                "ec2:CreateSecurityGroup",
+                                "ec2:CreateTags",
+                                "ec2:DeleteTags",
+                                "ec2:DescribeAvailabilityZones",
+                                "ec2:DescribeAccountAttributes",
+                                "ec2:DescribeInstances",
+                                "ec2:DescribeInstanceStatus",
+                                "ec2:DescribeKeyPairs",
+                                "ec2:DescribePrefixLists",
+                                "ec2:DescribeRouteTables",
+                                "ec2:DescribeSecurityGroups",
+                                "ec2:DescribeSpotInstanceRequests",
+                                "ec2:DescribeSpotPriceHistory",
+                                "ec2:DescribeSubnets",
+                                "ec2:DescribeVpcAttribute",
+                                "ec2:DescribeVpcEndpoints",
+                                "ec2:DescribeVpcEndpointServices",
+                                "ec2:DescribeVpcs",
+                                "ec2:ModifyImageAttribute",
+                                "ec2:ModifyInstanceAttribute",
+                                "ec2:RequestSpotInstances",
+                                "ec2:RunInstances",
+                                "ec2:TerminateInstances",
+                                "iam:GetRole",
+                                "iam:GetRolePolicy",
+                                "iam:ListInstanceProfiles",
+                                "iam:ListRolePolicies",
+                                "sqs:CreateQueue",
+                                "sqs:Delete*",
+                                "sqs:GetQueue*",
+                                "sqs:ReceiveMessage"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": "*"
+                        },
+                        {
+                            "Action": [
+                                "s3:List*",
+                                "s3:Get*"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:s3:::Smrtc-*",
+                                "arn:aws:s3:::Smrtc-*"
+                            ]
+                        },
+                        {
+                            "Action": [
+                                "iam:PassRole"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:iam::*:role/Smrtc-emr-ec2"
+                            ]
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                },
+                "Roles": [
+                    {
+                        "Ref": "SmrtcEMR"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::ManagedPolicy"
+        }
+    }
+}
