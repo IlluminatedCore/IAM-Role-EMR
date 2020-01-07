@@ -1,0 +1,82 @@
+{
+    "Description": "This templates creates the IAM role for the EC2 by EMR",
+    "Resources": {
+        "SmrtcEMREC2": {
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "RoleName": "Smrtc-emr-ec2"
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "SmrtcEMREC2Profile": {
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "SmrtcEMREC2"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::InstanceProfile"
+        },
+        "EMREC2Access": {
+            "Properties": {
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "s3:List*",
+                                "s3:Get*",
+                                "S3:PutObject*"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:s3:::Smrtc-*",
+                                "arn:aws:s3:::Smrtc-*"
+                            ]
+                        },
+                        {
+                            "Action": [
+                                "cloudwatch:*",
+                                "dynamodb:*",
+                                "ec2:Describe*",
+                                "elasticmapreduce:Describe*",
+                                "elasticmapreduce:ListBootstrapActions",
+                                "elasticmapreduce:ListClusters",
+                                "elasticmapreduce:ListInstanceGroups",
+                                "elasticmapreduce:ListInstances",
+                                "elasticmapreduce:ListSteps",
+                                "rds:Describe*",
+                                "sns:*",
+                                "sqs:*"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": "*"
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                },
+                "Roles": [
+                    {
+                        "Ref": "SmrtcEMREC2"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::ManagedPolicy"
+        }
+    }
+}
